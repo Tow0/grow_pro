@@ -1,30 +1,28 @@
 # grow_pro
 
-`grow_pro` is a personal growth agent project built as a focused extension on
-top of the existing `nanobot` runtime.
+`grow_pro` 是一个基于 `nanobot` 的个人成长 Agent 助手项目。
 
-The goal is not to rebuild an agent framework. The goal is to show how memory,
-context assembly, governed persistence, searchable history, and current-turn
-evidence can be added to an existing agent runtime with a clear boundary.
+这个项目的目标不是重新实现一个 Agent 框架，而是在已有 `nanobot`
+runtime 上，增加一层清晰、克制、可解释的成长领域能力：记忆治理、上下文装配、可搜索历史和当前回合证据输入。
 
-## Current Status
+## 当前状态
 
-The project is at final V1 state.
+当前项目处于 V1 收尾状态。
 
-Completed:
+已经完成：
 
-- `nanobot growth` CLI entrypoint
-- normalized `GrowthEvent` contract
-- rule-based execution mode selection
-- Hermes-style core memory snapshot
-- explicit memory candidate extraction
-- governed durable memory writes
-- searchable history over `history.jsonl`
-- thin SQLite FTS history index
-- current-turn evidence lane
-- growth-specific tests and documentation
+- `nanobot growth` CLI 入口
+- `GrowthEvent` 统一事件协议
+- 基于规则的 `ExecutionMode` 选择
+- Hermes-style 小核心记忆快照
+- 显式长期记忆候选抽取
+- `MemoryWriteCandidate + RuleBasedMemoryGovernor` 长期记忆治理
+- 基于 `history.jsonl` 的历史层
+- 薄 SQLite FTS history 索引
+- 当前回合 Evidence Lane
+- growth 相关测试和说明文档
 
-Validation:
+已经验证：
 
 ```text
 pytest tests/growth tests/cli/test_commands.py -p no:cacheprovider
@@ -34,9 +32,15 @@ ruff check nanobot/growth nanobot/cli/commands.py tests/growth tests/cli/test_co
 All checks passed
 ```
 
-## Architecture
+需要说明：
 
-The final architecture is:
+- 上面的验证证明代码链路、CLI 参数、上下文装配、记忆治理和测试用例通过。
+- 这不等于已经在没有配置 LLM 的情况下完成真实模型调用。
+- 如果要做真实对话演示，需要先配置 LLM provider、model 和 API key。
+
+## 架构概览
+
+最终架构是：
 
 ```text
 nanobot runtime
@@ -46,7 +50,7 @@ nanobot runtime
 + current-turn evidence lane
 ```
 
-`nanobot` remains the runtime layer. It still owns:
+`nanobot` 继续负责通用 runtime：
 
 - agent loop
 - runner
@@ -56,9 +60,9 @@ nanobot runtime
 - cron
 - file-based memory
 - skills
-- CLI and API foundation
+- CLI / API 基础能力
 
-`nanobot/growth` adds only the growth-specific layer:
+`nanobot/growth` 只增加成长领域层：
 
 - growth event contracts
 - execution mode vocabulary
@@ -69,31 +73,29 @@ nanobot runtime
 - growth orchestrator
 - current-turn evidence loader
 
-This keeps the implementation narrow and explainable.
+## 记忆系统
 
-## Memory Design
+当前实现采用 Hermes-style 三层记忆结构。
 
-The implementation uses a Hermes-style three-layer memory shape.
+Working Memory：
 
-Working memory:
+- 对应已有 `Session.messages`
+- 绑定当前会话
+- 不在 `growth` 下重新实现一套短期记忆系统
 
-- implemented by existing `Session.messages`
-- scoped to the active session
-- not reimplemented under `growth`
-
-Core memory:
+Core Memory：
 
 - `USER.md`
 - `memory/MEMORY.md`
-- small, durable, human-readable, auditable
+- 小而稳定、可读、可审计、可手工修正
 
-History layer:
+History Layer：
 
-- `memory/history.jsonl` as the source of truth
-- `memory/history_index.sqlite3` as a thin SQLite FTS index
-- lexical fallback when the index is unavailable
+- `memory/history.jsonl` 是 source of truth
+- `memory/history_index.sqlite3` 是薄 SQLite FTS 索引
+- 索引不可用时回退 lexical search
 
-Durable memory writes are governed by:
+长期记忆写入流程：
 
 ```text
 user message
@@ -103,20 +105,19 @@ user message
 -> USER.md / memory/MEMORY.md
 ```
 
-This is the main project distinction: memory is not just stored; durable memory
-is explicitly modeled, reviewed, and governed before it is persisted.
+项目重点不是“把更多内容存起来”，而是控制什么内容可以成为长期记忆，以及为什么可以写入。
 
-## Context And Retrieval
+## 上下文与检索
 
-This project does not claim to be a full custom RAG platform.
+当前项目不是完整自定义 RAG 平台。
 
-The accurate description is:
+更准确的说法是：
 
 ```text
 retrieval-informed context assembly
 ```
 
-The final context shape is stable:
+最终上下文结构是稳定 section：
 
 ```text
 [Role & Policies]
@@ -127,14 +128,14 @@ The final context shape is stable:
 [Relevant History]
 ```
 
-Implemented retrieval/context inputs:
+已经实现：
 
-- core memory snapshot
-- relevant history from `history.jsonl`
+- core memory snapshot 注入
+- relevant history 检索
 - SQLite FTS history search
-- current-turn evidence text and files
+- 当前回合 evidence 注入
 
-Not implemented in V1:
+没有实现：
 
 - vector-first RAG
 - graph memory
@@ -142,9 +143,9 @@ Not implemented in V1:
 - perceptual memory
 - cross-modal retrieval
 
-## Current-Turn Evidence
+## 当前回合 Evidence Lane
 
-The growth CLI supports evidence for the current turn:
+`nanobot growth` 支持当前回合证据输入：
 
 ```powershell
 nanobot growth `
@@ -155,24 +156,50 @@ nanobot growth `
   --session demo-session
 ```
 
-Evidence behavior:
+Evidence 行为：
 
-- inline evidence text enters `[Current Evidence]`
-- workspace file evidence is loaded and textualized when possible
-- image files are treated as lightweight references
-- evidence affects the current turn by default
-- evidence is not automatically written into long-term memory
-- long-term persistence still requires `MemoryWriteCandidate` and governor approval
+- inline evidence text 会进入 `[Current Evidence]`
+- workspace 文件会尽量文本化后进入 `[Current Evidence]`
+- 图片文件当前作为轻量引用处理
+- evidence 默认只影响当前 turn
+- evidence 不会自动写入长期记忆
+- 长期沉淀仍必须经过 `MemoryWriteCandidate + RuleBasedMemoryGovernor`
 
-## CLI Usage
+## LLM 配置
 
-Show the growth command:
+真实运行 `nanobot growth` 需要配置 LLM。
+
+最小配置通常包括：
+
+- provider
+- model
+- API key
+
+配置方式沿用 `nanobot` 底座的配置系统。可以先运行：
+
+```powershell
+nanobot onboard
+```
+
+也可以直接编辑本地配置文件。配置文件属于本机运行环境，不应该提交到 Git 仓库。
+
+配置时只需要在本地提供 provider、model 和 API key。README 不保存任何真实密钥或本机配置内容。
+
+注意：
+
+- 不要把真实 API key 写进 README。
+- 不要把本地配置目录提交到 Git。
+- 当前 `.gitignore` 已忽略本地运行态目录。
+
+## CLI 示例
+
+查看 growth 命令：
 
 ```powershell
 nanobot growth --help
 ```
 
-Explicit preference persistence:
+显式偏好写入：
 
 ```powershell
 nanobot growth `
@@ -182,7 +209,7 @@ nanobot growth `
   --session demo-session
 ```
 
-Blocked task recovery:
+任务阻塞进入 recovery mode：
 
 ```powershell
 nanobot growth `
@@ -194,7 +221,7 @@ nanobot growth `
   --session demo-session
 ```
 
-Current-turn evidence:
+当前回合 evidence：
 
 ```powershell
 nanobot growth `
@@ -205,9 +232,9 @@ nanobot growth `
   --session demo-session
 ```
 
-## Project Structure
+## 项目结构
 
-Growth-specific implementation:
+growth 相关实现集中在：
 
 ```text
 nanobot/growth
@@ -238,13 +265,13 @@ nanobot/growth
    └─ interfaces.py
 ```
 
-Real user-facing entrypoint:
+真实 CLI 入口：
 
 ```text
 nanobot/cli/commands.py
 ```
 
-Growth tests:
+growth 测试：
 
 ```text
 tests/growth
@@ -257,54 +284,41 @@ tests/growth
 └─ test_orchestrator.py
 ```
 
-## Development Setup
+## 开发与验证
 
-Recommended environment:
-
-```text
-Python 3.11
-Conda env: growpro
-```
-
-Install in editable mode:
+安装：
 
 ```powershell
-D:\Anaconda\envs\growpro\python.exe -m pip install -e D:\codex\project\grow_pro
+python -m pip install -e .
 ```
 
-Install development dependencies:
+安装开发依赖：
 
 ```powershell
-D:\Anaconda\envs\growpro\python.exe -m pip install -e "D:\codex\project\grow_pro[dev]"
+python -m pip install -e ".[dev]"
 ```
 
-Verify import source:
+验证当前源码来源：
 
 ```powershell
-D:\Anaconda\envs\growpro\python.exe -c "import nanobot; print(nanobot.__file__)"
+python -c "import nanobot; print(nanobot.__file__)"
 ```
 
-Expected source:
-
-```text
-D:\codex\project\grow_pro\nanobot\__init__.py
-```
-
-Run tests:
+运行 growth 和 CLI 测试：
 
 ```powershell
-D:\Anaconda\envs\growpro\python.exe -m pytest D:\codex\project\grow_pro\tests\growth D:\codex\project\grow_pro\tests\cli\test_commands.py -p no:cacheprovider
+python -m pytest tests/growth tests/cli/test_commands.py -p no:cacheprovider
 ```
 
-Run lint:
+运行 lint：
 
 ```powershell
-D:\Anaconda\envs\growpro\python.exe -m ruff check D:\codex\project\grow_pro\nanobot\growth D:\codex\project\grow_pro\nanobot\cli\commands.py D:\codex\project\grow_pro\tests\growth D:\codex\project\grow_pro\tests\cli\test_commands.py
+python -m ruff check nanobot/growth nanobot/cli/commands.py tests/growth tests/cli/test_commands.py
 ```
 
-## Documentation
+## 文档
 
-Recommended reading order:
+建议阅读顺序：
 
 1. `docs/growth/project-guide.zh-CN.md`
 2. `docs/growth/architecture.md`
@@ -314,44 +328,75 @@ Recommended reading order:
 6. `docs/growth/interview-narrative.md`
 7. `docs/growth/demo-walkthrough.md`
 
-## Relationship To nanobot
+## 与 nanobot 的关系
 
-This repository includes and extends the `nanobot` codebase. The runtime,
-provider, channel, session, skill, cron, and base memory systems come from the
-underlying nanobot architecture.
+本项目包含并复用了 `nanobot` 代码。
 
-The growth-specific contribution lives under `nanobot/growth` and in the
-`nanobot growth` CLI path.
+`nanobot` 提供 runtime：
 
-In short:
+- loop
+- session
+- tools
+- providers
+- channels
+- memory foundation
+- skills
+
+`grow_pro` 增加 growth 领域层：
+
+- growth event
+- governed memory writes
+- Hermes-style memory service
+- searchable history
+- current-turn evidence lane
+
+一句话：
 
 ```text
 nanobot provides the runtime.
 grow_pro adds the growth memory and context layer.
 ```
 
-## What This Project Is Not
+## 本项目不是什么
 
-This project is not:
+本项目不是：
 
-- a new general-purpose agent framework
-- a second runtime
-- a second skill system
-- a workflow platform
-- a vector RAG system
-- a graph memory system
-- a perceptual memory platform
-- a multimodal long-term memory system
+- 新的通用 Agent 框架
+- 第二套 runtime
+- 第二套 skill 系统
+- workflow 平台
+- vector RAG 系统
+- graph memory 系统
+- perceptual memory 平台
+- 多模态长期记忆系统
 
-V1 intentionally stays narrow so the behavior can be run, tested, audited, and
-explained.
+V1 刻意保持窄边界，以便能运行、能测试、能审计、能讲清楚。
+
+## 隐私与提交规则
+
+不要提交：
+
+- `.env`
+- API key
+- 本地 LLM 配置
+- 本地运行目录
+- 私人 workspace 数据
+- SQLite history 索引
+- 临时日志和缓存
+
+当前 `.gitignore` 已忽略：
+
+```text
+.nanobot/
+workspace/
+**/history_index.sqlite3
+```
 
 ## License And Attribution
 
-This project is based on the open-source `nanobot` project and keeps the
-original license and third-party notices in this repository.
+本项目基于开源 `nanobot` 项目进行二次开发，并保留原始 license 和第三方声明。
 
-See:
+相关文件：
 
 - `LICENSE`
 - `THIRD_PARTY_NOTICES.md`
