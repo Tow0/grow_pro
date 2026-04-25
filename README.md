@@ -1,294 +1,358 @@
-![cover-v5-optimized](./images/GitHub_README.png)
+# grow_pro
 
-<div align="center">
-  <p>
-    <a href="https://pypi.org/project/nanobot-ai/"><img src="https://img.shields.io/pypi/v/nanobot-ai" alt="PyPI"></a>
-    <a href="https://pepy.tech/project/nanobot-ai"><img src="https://static.pepy.tech/badge/nanobot-ai" alt="Downloads"></a>
-    <img src="https://img.shields.io/badge/python-≥3.11-blue" alt="Python">
-    <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
-    <a href="https://github.com/HKUDS/nanobot/graphs/commit-activity" target="_blank">
-        <img alt="Commits last month" src="https://img.shields.io/github/commit-activity/m/HKUDS/nanobot?labelColor=%20%2332b583&color=%20%2312b76a"></a>
-    <a href="https://github.com/HKUDS/nanobot/issues?q=is%3Aissue%20is%3Aclosed" target="_blank">
-        <img alt="Issues closed" src="https://img.shields.io/github/issues-search?query=repo%3AHKUDS%2Fnanobot%20is%3Aissue%20is%3Aclosed&label=issues%20closed&labelColor=%20%237d89b0&color=%20%235d6b98"></a>
-    <a href="https://twitter.com/intent/follow?screen_name=nanobot_project" target="_blank">
-        <img src="https://img.shields.io/twitter/follow/nanobot_project?logo=X&color=%20%23f5f5f5" alt="follow on X(Twitter)"></a>
-    <a href="https://nanobot.wiki/docs/latest/getting-started/nanobot-overview"><img src="https://img.shields.io/badge/Docs-nanobot.wiki-blue?style=flat&logo=readthedocs&logoColor=white" alt="Docs"></a>
-    <a href="./COMMUNICATION.md"><img src="https://img.shields.io/badge/Feishu-Group-E9DBFC?style=flat&logo=feishu&logoColor=white" alt="Feishu"></a>
-    <a href="./COMMUNICATION.md"><img src="https://img.shields.io/badge/WeChat-Group-C5EAB4?style=flat&logo=wechat&logoColor=white" alt="WeChat"></a>
-    <a href="https://discord.gg/MnCvHqpUGB"><img src="https://img.shields.io/badge/Discord-Community-5865F2?style=flat&logo=discord&logoColor=white" alt="Discord"></a>
-  </p>
-</div>
+`grow_pro` is a personal growth agent project built as a focused extension on
+top of the existing `nanobot` runtime.
 
-🐈 **nanobot** is an open-source and ultra-lightweight AI agent in the spirit of [OpenClaw](https://github.com/openclaw/openclaw), [Claude Code](https://www.anthropic.com/claude-code), and [Codex](https://www.openai.com/codex/). It keeps the core agent loop small and readable while still supporting chat channels, memory, MCP and practical deployment paths, so you can go from local setup to a long-running personal agent with minimal overhead.
+The goal is not to rebuild an agent framework. The goal is to show how memory,
+context assembly, governed persistence, searchable history, and current-turn
+evidence can be added to an existing agent runtime with a clear boundary.
 
-## 📢 News
+## Current Status
 
-- **2026-04-14** 🚀 Released **v0.1.5.post1** — Dream skill discovery, mid-turn follow-up injection, WebSocket channel, and deeper channel integrations. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.5.post1) for details.
-- **2026-04-13** 🛡️ Agent turn hardened — user messages persisted early, auto-compact skips active tasks.
-- **2026-04-12** 🔒 Lark global domain support, Dream learns discovered skills, shell sandbox tightened.
-- **2026-04-11** ⚡ Context compact shrinks sessions on the fly; Kagi web search; QQ & WeCom full media.
-- **2026-04-10** 📓 Notebook editing tool, multiple MCP servers, Feishu streaming & done-emoji.
-- **2026-04-09** 🔌 WebSocket channel, unified cross-channel session, `disabled_skills` config.
-- **2026-04-08** 📤 API file uploads, OpenAI reasoning auto-routing with Responses fallback.
-- **2026-04-07** 🧠 Anthropic adaptive thinking, MCP resources & prompts exposed as tools.
-- **2026-04-06** 🛰️ Langfuse observability, unified Whisper transcription, email attachments.
-- **2026-04-05** 🚀 Released **v0.1.5** — sturdier long-running tasks, Dream two-stage memory, production-ready sandboxing and programming Agent SDK. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.5) for details.
+The project is at final V1 state.
 
-<details>
-<summary>Earlier news</summary>
+Completed:
 
-- **2026-04-04** 🚀 Jinja2 response templates, Dream memory hardened, smarter retry handling.
-- **2026-04-03** 🧠 Xiaomi MiMo provider, chain-of-thought reasoning visible, Telegram UX polish.
-- **2026-04-02** 🧱 Long-running tasks run more reliably — core runtime hardening.
-- **2026-04-01** 🔑 GitHub Copilot auth restored; stricter workspace paths; OpenRouter Claude caching fix.
-- **2026-03-31** 🛰️ WeChat multimodal alignment, Discord/Matrix polish, Python SDK facade, MCP and tool fixes.
-- **2026-03-30** 🧩 OpenAI-compatible API tightened; composable agent lifecycle hooks.
-- **2026-03-29** 💬 WeChat voice, typing, QR/media resilience; fixed-session OpenAI-compatible API.
-- **2026-03-28** 📚 Provider docs refresh; skill template wording fix.
-- **2026-03-27** 🚀 Released **v0.1.4.post6** — architecture decoupling, litellm removal, end-to-end streaming, WeChat channel, and a security fix. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4.post6) for details.
-- **2026-03-26** 🏗️ Agent runner extracted and lifecycle hooks unified; stream delta coalescing at boundaries.
-- **2026-03-25** 🌏 StepFun provider, configurable timezone, Gemini thought signatures.
-- **2026-03-24** 🔧 WeChat compatibility, Feishu CardKit streaming, test suite restructured.
-- **2026-03-23** 🔧 Command routing refactored for plugins, WhatsApp/WeChat media, unified channel login CLI.
-- **2026-03-22** ⚡ End-to-end streaming, WeChat channel, Anthropic cache optimization, `/status` command.
-- **2026-03-21** 🔒 Replace `litellm` with native `openai` + `anthropic` SDKs. Please see [commit](https://github.com/HKUDS/nanobot/commit/3dfdab7).
-- **2026-03-20** 🧙 Interactive setup wizard — pick your provider, model autocomplete, and you're good to go.
-- **2026-03-19** 💬 Telegram gets more resilient under load; Feishu now renders code blocks properly.
-- **2026-03-18** 📷 Telegram can now send media via URL. Cron schedules show human-readable details.
-- **2026-03-17** ✨ Feishu formatting glow-up, Slack reacts when done, custom endpoints support extra headers, and image handling is more reliable.
-- **2026-03-16** 🚀 Released **v0.1.4.post5** — a refinement-focused release with stronger reliability and channel support, and a more dependable day-to-day experience. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4.post5) for details.
-- **2026-03-15** 🧩 DingTalk rich media, smarter built-in skills, and cleaner model compatibility.
-- **2026-03-14** 💬 Channel plugins, Feishu replies, and steadier MCP, QQ, and media handling.
-- **2026-03-13** 🌐 Multi-provider web search, LangSmith, and broader reliability improvements.
-- **2026-03-12** 🚀 VolcEngine support, Telegram reply context, `/restart`, and sturdier memory.
-- **2026-03-11** 🔌 WeCom, Ollama, cleaner discovery, and safer tool behavior.
-- **2026-03-10** 🧠 Token-based memory, shared retries, and cleaner gateway and Telegram behavior.
-- **2026-03-09** 💬 Slack thread polish and better Feishu audio compatibility.
-- **2026-03-08** 🚀 Released **v0.1.4.post4** — a reliability-packed release with safer defaults, better multi-instance support, sturdier MCP, and major channel and provider improvements. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4.post4) for details.
-- **2026-03-07** 🚀 Azure OpenAI provider, WhatsApp media, QQ group chats, and more Telegram/Feishu polish.
-- **2026-03-06** 🪄 Lighter providers, smarter media handling, and sturdier memory and CLI compatibility.
-- **2026-03-05** ⚡️ Telegram draft streaming, MCP SSE support, and broader channel reliability fixes.
-- **2026-03-04** 🛠️ Dependency cleanup, safer file reads, and another round of test and Cron fixes.
-- **2026-03-03** 🧠 Cleaner user-message merging, safer multimodal saves, and stronger Cron guards.
-- **2026-03-02** 🛡️ Safer default access control, sturdier Cron reloads, and cleaner Matrix media handling.
-- **2026-03-01** 🌐 Web proxy support, smarter Cron reminders, and Feishu rich-text parsing improvements.
-- **2026-02-28** 🚀 Released **v0.1.4.post3** — cleaner context, hardened session history, and smarter agent. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4.post3) for details.
-- **2026-02-27** 🧠 Experimental thinking mode support, DingTalk media messages, Feishu and QQ channel fixes.
-- **2026-02-26** 🛡️ Session poisoning fix, WhatsApp dedup, Windows path guard, Mistral compatibility.
-- **2026-02-25** 🧹 New Matrix channel, cleaner session context, auto workspace template sync.
-- **2026-02-24** 🚀 Released **v0.1.4.post2** — a reliability-focused release with a redesigned heartbeat, prompt cache optimization, and hardened provider & channel stability. See [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4.post2) for details.
-- **2026-02-23** 🔧 Virtual tool-call heartbeat, prompt cache optimization, Slack mrkdwn fixes.
-- **2026-02-22** 🛡️ Slack thread isolation, Discord typing fix, agent reliability improvements.
-- **2026-02-21** 🎉 Released **v0.1.4.post1** — new providers, media support across channels, and major stability improvements. See [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4.post1) for details.
-- **2026-02-20** 🐦 Feishu now receives multimodal files from users. More reliable memory under the hood.
-- **2026-02-19** ✨ Slack now sends files, Discord splits long messages, and subagents work in CLI mode.
-- **2026-02-18** ⚡️ nanobot now supports VolcEngine, MCP custom auth headers, and Anthropic prompt caching.
-- **2026-02-17** 🎉 Released **v0.1.4** — MCP support, progress streaming, new providers, and multiple channel improvements. Please see [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.4) for details.
-- **2026-02-16** 🦞 nanobot now integrates a [ClawHub](https://clawhub.ai) skill — search and install public agent skills.
-- **2026-02-15** 🔑 nanobot now supports OpenAI Codex provider with OAuth login support.
-- **2026-02-14** 🔌 nanobot now supports MCP! See [MCP section](#mcp-model-context-protocol) for details.
-- **2026-02-13** 🎉 Released **v0.1.3.post7** — includes security hardening and multiple improvements. **Please upgrade to the latest version to address security issues**. See [release notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post7) for more details.
-- **2026-02-12** 🧠 Redesigned memory system — Less code, more reliable. Join the [discussion](https://github.com/HKUDS/nanobot/discussions/566) about it!
-- **2026-02-11** ✨ Enhanced CLI experience and added MiniMax support!
-- **2026-02-10** 🎉 Released **v0.1.3.post6** with improvements! Check the updates [notes](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post6) and our [roadmap](https://github.com/HKUDS/nanobot/discussions/431).
-- **2026-02-09** 💬 Added Slack, Email, and QQ support — nanobot now supports multiple chat platforms!
-- **2026-02-08** 🔧 Refactored Providers—adding a new LLM provider now takes just 2 simple steps! Check [here](#providers).
-- **2026-02-07** 🚀 Released **v0.1.3.post5** with Qwen support & several key improvements! Check [here](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post5) for details.
-- **2026-02-06** ✨ Added Moonshot/Kimi provider, Discord integration, and enhanced security hardening!
-- **2026-02-05** ✨ Added Feishu channel, DeepSeek provider, and enhanced scheduled tasks support!
-- **2026-02-04** 🚀 Released **v0.1.3.post4** with multi-provider & Docker support! Check [here](https://github.com/HKUDS/nanobot/releases/tag/v0.1.3.post4) for details.
-- **2026-02-03** ⚡ Integrated vLLM for local LLM support and improved natural language task scheduling!
-- **2026-02-02** 🎉 nanobot officially launched! Welcome to try 🐈 nanobot!
+- `nanobot growth` CLI entrypoint
+- normalized `GrowthEvent` contract
+- rule-based execution mode selection
+- Hermes-style core memory snapshot
+- explicit memory candidate extraction
+- governed durable memory writes
+- searchable history over `history.jsonl`
+- thin SQLite FTS history index
+- current-turn evidence lane
+- growth-specific tests and documentation
 
-</details>
+Validation:
 
+```text
+pytest tests/growth tests/cli/test_commands.py -p no:cacheprovider
+94 passed
 
-## 💡 Key Features of nanobot
-
-- **Ultra-lightweight**: stable long-running agent behavior with a small, readable core.
-- **Research-ready**: the codebase is intentionally simple enough to study, modify, and extend.
-- **Practical**: chat channels, API, memory, MCP, and deployment paths are already built in.
-- **Hackable**: you can start fast, then go deeper through repo docs instead of a monolithic landing page.
-
-## 📦 Install
-
-> [!IMPORTANT]
-> If you want the newest features and experiments, install from source. 
-> 
-> If you want the most stable day-to-day experience, install from PyPI or with `uv`.
-
-**Install from source**
-
-```bash
-git clone https://github.com/HKUDS/nanobot.git
-cd nanobot
-pip install -e .
+ruff check nanobot/growth nanobot/cli/commands.py tests/growth tests/cli/test_commands.py
+All checks passed
 ```
 
-**Install with `uv`**
+## Architecture
 
-```bash
-uv tool install nanobot-ai
+The final architecture is:
+
+```text
+nanobot runtime
++ Hermes-style memory
++ growth write governance
++ searchable history
++ current-turn evidence lane
 ```
 
-**Install from PyPI**
+`nanobot` remains the runtime layer. It still owns:
 
-```bash
-pip install nanobot-ai
+- agent loop
+- runner
+- providers
+- channels
+- sessions
+- cron
+- file-based memory
+- skills
+- CLI and API foundation
+
+`nanobot/growth` adds only the growth-specific layer:
+
+- growth event contracts
+- execution mode vocabulary
+- memory write candidates
+- memory write governor
+- core memory snapshot service
+- stable context assembler
+- growth orchestrator
+- current-turn evidence loader
+
+This keeps the implementation narrow and explainable.
+
+## Memory Design
+
+The implementation uses a Hermes-style three-layer memory shape.
+
+Working memory:
+
+- implemented by existing `Session.messages`
+- scoped to the active session
+- not reimplemented under `growth`
+
+Core memory:
+
+- `USER.md`
+- `memory/MEMORY.md`
+- small, durable, human-readable, auditable
+
+History layer:
+
+- `memory/history.jsonl` as the source of truth
+- `memory/history_index.sqlite3` as a thin SQLite FTS index
+- lexical fallback when the index is unavailable
+
+Durable memory writes are governed by:
+
+```text
+user message
+-> memory extractor
+-> MemoryWriteCandidate
+-> RuleBasedMemoryGovernor
+-> USER.md / memory/MEMORY.md
 ```
 
-## 🚀 Quick Start
+This is the main project distinction: memory is not just stored; durable memory
+is explicitly modeled, reviewed, and governed before it is persisted.
 
-**1. Initialize**
+## Context And Retrieval
 
-```bash
-nanobot onboard
+This project does not claim to be a full custom RAG platform.
+
+The accurate description is:
+
+```text
+retrieval-informed context assembly
 ```
 
-**2. Configure** (`~/.nanobot/config.json`)
+The final context shape is stable:
 
-Configure these **two parts** in your config (other options have defaults). Add or merge the following blocks into your existing config instead of replacing the whole file.
-
-*Set your API key* (e.g. [OpenRouter](https://openrouter.ai/keys), recommended for global users):
-
-```json
-{
-  "providers": {
-    "openrouter": {
-      "apiKey": "sk-or-v1-xxx"
-    }
-  }
-}
+```text
+[Role & Policies]
+[Task]
+[State]
+[Current Evidence]
+[Memory Snapshot]
+[Relevant History]
 ```
 
-*Set your model* (optionally pin a provider — defaults to auto-detection):
+Implemented retrieval/context inputs:
 
-```json
-{
-  "agents": {
-    "defaults": {
-      "provider": "openrouter",
-      "model": "anthropic/claude-opus-4-6"
-    }
-  }
-}
+- core memory snapshot
+- relevant history from `history.jsonl`
+- SQLite FTS history search
+- current-turn evidence text and files
+
+Not implemented in V1:
+
+- vector-first RAG
+- graph memory
+- cross-source ranking platform
+- perceptual memory
+- cross-modal retrieval
+
+## Current-Turn Evidence
+
+The growth CLI supports evidence for the current turn:
+
+```powershell
+nanobot growth `
+  --message "根据这些材料帮我总结成长风险。" `
+  --event-type checkin `
+  --evidence-text "本周三次熬夜，第二天专注度明显下降。" `
+  --user-id demo-user `
+  --session demo-session
 ```
 
-**3. Chat**
+Evidence behavior:
 
-```bash
-nanobot agent
+- inline evidence text enters `[Current Evidence]`
+- workspace file evidence is loaded and textualized when possible
+- image files are treated as lightweight references
+- evidence affects the current turn by default
+- evidence is not automatically written into long-term memory
+- long-term persistence still requires `MemoryWriteCandidate` and governor approval
+
+## CLI Usage
+
+Show the growth command:
+
+```powershell
+nanobot growth --help
 ```
 
+Explicit preference persistence:
 
-- Want different LLM providers, web search, MCP, security settings, or more config options? See [Configuration](./docs/configuration.md)
-- Want to run nanobot in chat apps like Telegram, Discord, WeChat or Feishu? See [Chat Apps](./docs/chat-apps.md)
-- Want Docker or Linux service deployment? See [Deployment](./docs/deployment.md)
-
-## 🧪 WebUI (Development)
-
-> [!NOTE]
-> The WebUI development workflow currently requires a source checkout and is not yet shipped together with the official packaged release. See [WebUI Document](./webui/README.md) for full WebUI development docs and build steps.
-
-<p align="center">
-  <img src="images/nanobot_webui.png" alt="nanobot webui preview" width="900">
-</p>
-
-**1. Start the gateway**
-
-```bash
-nanobot gateway
+```powershell
+nanobot growth `
+  --message "以后回答直接一点，少些铺垫。" `
+  --event-type user_message `
+  --user-id demo-user `
+  --session demo-session
 ```
 
-**2. Start the webui dev server**
+Blocked task recovery:
 
-```bash
-cd webui
-bun install
-bun run dev
+```powershell
+nanobot growth `
+  --message "The task is blocked because the reviewer has not replied." `
+  --event-type task_update `
+  --status blocked `
+  --priority high `
+  --user-id demo-user `
+  --session demo-session
 ```
 
-## 🏗️ Architecture
+Current-turn evidence:
 
-<p align="center">
-  <img src="images/nanobot_arch.png" alt="nanobot architecture" width="800">
-</p>
+```powershell
+nanobot growth `
+  --message "根据这份复盘材料，帮我识别下周最该避免的问题。" `
+  --event-type checkin `
+  --evidence .\workspace\weekly_review.md `
+  --user-id demo-user `
+  --session demo-session
+```
 
-🐈 nanobot stays lightweight by centering everything around a small agent loop: messages come in from chat apps, the LLM decides when tools are needed, and memory or skills are pulled in only as context instead of becoming a heavy orchestration layer. That keeps the core path readable and easy to extend, while still letting you add channels, tools, memory, and deployment options without turning the system into a monolith.
+## Project Structure
 
-## ✨ Features
+Growth-specific implementation:
 
-<table align="center">
-  <tr align="center">
-    <th><p align="center">📈 24/7 Real-Time Market Analysis</p></th>
-    <th><p align="center">🚀 Full-Stack Software Engineer</p></th>
-    <th><p align="center">📅 Smart Daily Routine Manager</p></th>
-    <th><p align="center">📚 Personal Knowledge Assistant</p></th>
-  </tr>
-  <tr>
-    <td align="center"><p align="center"><img src="case/search.gif" width="180" height="400"></p></td>
-    <td align="center"><p align="center"><img src="case/code.gif" width="180" height="400"></p></td>
-    <td align="center"><p align="center"><img src="case/schedule.gif" width="180" height="400"></p></td>
-    <td align="center"><p align="center"><img src="case/memory.gif" width="180" height="400"></p></td>
-  </tr>
-  <tr>
-    <td align="center">Discovery • Insights • Trends</td>
-    <td align="center">Develop • Deploy • Scale</td>
-    <td align="center">Schedule • Automate • Organize</td>
-    <td align="center">Learn • Memory • Reasoning</td>
-  </tr>
-</table>
+```text
+nanobot/growth
+├─ contracts/
+│  ├─ context.py
+│  ├─ events.py
+│  ├─ evidence.py
+│  ├─ execution.py
+│  ├─ memory.py
+│  └─ tasks.py
+├─ context/
+│  ├─ assembler.py
+│  ├─ evidence.py
+│  ├─ ranking.py
+│  └─ retrievers.py
+├─ memory/
+│  ├─ extractor.py
+│  ├─ governor.py
+│  └─ snapshot.py
+├─ orchestrator/
+│  ├─ interfaces.py
+│  └─ service.py
+├─ integration/
+│  └─ nanobot_runtime.py
+├─ domain/
+│  └─ models.py
+└─ repositories/
+   └─ interfaces.py
+```
 
-## 📚 Docs
+Real user-facing entrypoint:
 
-Browse the [repo docs](./docs/README.md) for the latest features and GitHub development version, or visit [nanobot.wiki](https://nanobot.wiki/docs/latest/getting-started/nanobot-overview) for the stable release documentation.
+```text
+nanobot/cli/commands.py
+```
 
-- Talk to your nanobot with familiar chat apps: [Chat Apps](./docs/chat-apps.md)
-- Configure providers, web search, MCP, and runtime behavior: [Configuration](./docs/configuration.md)
-- Integrate nanobot with local tools and automations: [OpenAI-Compatible API](./docs/openai-api.md) · [Python SDK](./docs/python-sdk.md)
-- Run nanobot with Docker or as a Linux service: [Deployment](./docs/deployment.md)
+Growth tests:
 
-## 🤝 Contribute & Roadmap
+```text
+tests/growth
+├─ test_context_assembler.py
+├─ test_contracts.py
+├─ test_evidence_loader.py
+├─ test_memory_extractor.py
+├─ test_memory_governor.py
+├─ test_memory_snapshot.py
+└─ test_orchestrator.py
+```
 
-PRs welcome! The codebase is intentionally small and readable. 🤗
+## Development Setup
 
-### Branching Strategy
+Recommended environment:
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Stable releases — bug fixes and minor improvements |
-| `nightly` | Experimental features — new features and breaking changes |
+```text
+Python 3.11
+Conda env: growpro
+```
 
-**Unsure which branch to target?** See [CONTRIBUTING.md](./CONTRIBUTING.md) for details.
+Install in editable mode:
 
-**Roadmap** — Pick an item and [open a PR](https://github.com/HKUDS/nanobot/pulls)!
+```powershell
+D:\Anaconda\envs\growpro\python.exe -m pip install -e D:\codex\project\grow_pro
+```
 
-- **Multi-modal** — See and hear (images, voice, video)
-- **Long-term memory** — Never forget important context
-- **Better reasoning** — Multi-step planning and reflection
-- **More integrations** — Calendar and more
-- **Self-improvement** — Learn from feedback and mistakes
+Install development dependencies:
 
-### Contributors
+```powershell
+D:\Anaconda\envs\growpro\python.exe -m pip install -e "D:\codex\project\grow_pro[dev]"
+```
 
-<a href="https://github.com/HKUDS/nanobot/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=HKUDS/nanobot&max=100&columns=12&updated=20260210" alt="Contributors" />
-</a>
+Verify import source:
 
+```powershell
+D:\Anaconda\envs\growpro\python.exe -c "import nanobot; print(nanobot.__file__)"
+```
 
-## ⭐ Star History
+Expected source:
 
-<div align="center">
-  <a href="https://star-history.com/#HKUDS/nanobot&Date">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=HKUDS/nanobot&type=Date&theme=dark" />
-      <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=HKUDS/nanobot&type=Date" />
-      <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=HKUDS/nanobot&type=Date" style="border-radius: 15px; box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);" />
-    </picture>
-  </a>
-</div>
+```text
+D:\codex\project\grow_pro\nanobot\__init__.py
+```
 
-<p align="center">
-  <em> Thanks for visiting ✨ nanobot!</em><br><br>
-  <img src="https://visitor-badge.laobi.icu/badge?page_id=HKUDS.nanobot&style=for-the-badge&color=00d4ff" alt="Views">
-</p>
+Run tests:
+
+```powershell
+D:\Anaconda\envs\growpro\python.exe -m pytest D:\codex\project\grow_pro\tests\growth D:\codex\project\grow_pro\tests\cli\test_commands.py -p no:cacheprovider
+```
+
+Run lint:
+
+```powershell
+D:\Anaconda\envs\growpro\python.exe -m ruff check D:\codex\project\grow_pro\nanobot\growth D:\codex\project\grow_pro\nanobot\cli\commands.py D:\codex\project\grow_pro\tests\growth D:\codex\project\grow_pro\tests\cli\test_commands.py
+```
+
+## Documentation
+
+Recommended reading order:
+
+1. `docs/growth/project-guide.zh-CN.md`
+2. `docs/growth/architecture.md`
+3. `docs/growth/memory-and-rag.md`
+4. `docs/growth/multimodal-evidence.md`
+5. `docs/growth/source-map.md`
+6. `docs/growth/interview-narrative.md`
+7. `docs/growth/demo-walkthrough.md`
+
+## Relationship To nanobot
+
+This repository includes and extends the `nanobot` codebase. The runtime,
+provider, channel, session, skill, cron, and base memory systems come from the
+underlying nanobot architecture.
+
+The growth-specific contribution lives under `nanobot/growth` and in the
+`nanobot growth` CLI path.
+
+In short:
+
+```text
+nanobot provides the runtime.
+grow_pro adds the growth memory and context layer.
+```
+
+## What This Project Is Not
+
+This project is not:
+
+- a new general-purpose agent framework
+- a second runtime
+- a second skill system
+- a workflow platform
+- a vector RAG system
+- a graph memory system
+- a perceptual memory platform
+- a multimodal long-term memory system
+
+V1 intentionally stays narrow so the behavior can be run, tested, audited, and
+explained.
+
+## License And Attribution
+
+This project is based on the open-source `nanobot` project and keeps the
+original license and third-party notices in this repository.
+
+See:
+
+- `LICENSE`
+- `THIRD_PARTY_NOTICES.md`
+- `docs/growth/project-guide.zh-CN.md`
